@@ -1,0 +1,58 @@
+<!DOCTYPE html>
+<html>
+<head>
+  <title>WaR HeRo.s</title>
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+</head>
+
+<body style="background:#0f172a; color:white; font-family:Arial; text-align:center;">
+
+<h1>🏆 WaR HeRo.s</h1>
+
+<button onclick="load()" style="padding:10px 20px; border-radius:10px; border:none; background:#22c55e; color:white; font-size:16px;">
+  Carregar Ranking
+</button>
+
+<ul id="lista" style="list-style:none; padding:0; margin-top:20px;"></ul>
+
+<script>
+async function load() {
+  const token = prompt("Cole seu token da API:");
+
+  const tag = "%2382C8CGYQ";
+
+  const res = await fetch(`https://api.clashofclans.com/v1/clans/${tag}`, {
+    headers: {
+      "Authorization": "Bearer " + token
+    }
+  });
+
+  const data = await res.json();
+
+  const lista = document.getElementById("lista");
+  lista.innerHTML = "";
+
+  let ranking = data.memberList.map(p => ({
+    nome: p.name,
+    pontos: p.trophies
+  }));
+
+  ranking.sort((a,b)=>b.pontos-a.pontos);
+
+  ranking.forEach((p,i) => {
+    let medalha = "";
+    if(i==0) medalha="🥇";
+    if(i==1) medalha="🥈";
+    if(i==2) medalha="🥉";
+
+    lista.innerHTML += `
+      <li style="margin:10px; font-size:18px;">
+        ${medalha} ${p.nome} - ${p.pontos}
+      </li>
+    `;
+  });
+}
+</script>
+
+</body>
+</html>
